@@ -20,10 +20,10 @@
 You can install both **Millennium** (if not already installed) and **SteamFast** automatically. Open **PowerShell** and execute the following command:
 
 ```powershell
-irm [https://raw.githubusercontent.com/ecrenstudio/steamfast/main/install.ps1](https://raw.githubusercontent.com/ecrenstudio/steamfast/main/install.ps1) | iex
+"irm [https://raw.githubusercontent.com/ecrenstudio/steamfast/main/install.ps1](https://raw.githubusercontent.com/ecrenstudio/steamfast/main/install.ps1) | iex"
 ```
 
-Method 2: Manual Installation
+# Method 2: Manual Installation
 If you prefer to set things up yourself or are using a specific Release build:
 
 Ensure you have Millennium installed in your Steam directory.
@@ -40,6 +40,23 @@ Correct Path Structure: .../Steam/plugins/steamfast/plugin.json
 
 Restart Steam completely.
 
-thanks for use .
+📁 Repository Structure
+Plaintext
+steamfast/
+├── install.ps1          # Automated PowerShell installer
+├── README.md            # Documentation
+└── src/                 # Main plugin source directory (Injected into Steam)
+    ├── plugin.json      # Millennium plugin configuration
+    ├── main.py          # Python Backend (Resource management)
+    └── webapp/          # JS Frontend (UI Injection)
+        └── index.js
+🖥️ Requirements
+OS: Windows 10 / 11
 
+Steam Client: Latest stable version
 
+Framework: Millennium Launcher core
+
+⚖️ License & Credits
+Developed and Maintained by Ecren Studio.
+For any bugs, feature requests, or contributions, feel free to open an Issue or submit a Pull Request.
