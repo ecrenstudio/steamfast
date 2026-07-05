@@ -1,8 +1,15 @@
 {
-    "name": "SteamFast",
-    "description": "Manage Steam RAM, track game history, deleted games, and average FPS.",
-    "version": "8.4",
-    "author": "Ecren Studio",
-    "common": "./webapp/index.js",
-    "backend": "./main.py"
+  "name": "SteamFast",
+  "version": "8.4.0",
+  "description": "Manage Steam RAM, track game history, deleted games, and average FPS.",
+  "author": "Ecren Studio",
+  "funding": "",
+  "connections": {
+    "web": {
+      "main": "index.js"
+    },
+    "backend": {
+      "main": "main.py"
+    }
+  }
 }
