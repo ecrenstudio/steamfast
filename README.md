@@ -40,16 +40,6 @@ Correct Path Structure: .../Steam/plugins/steamfast/plugin.json
 
 Restart Steam completely.
 
-📁 Repository Structure
-Plaintext
-steamfast/
-├── install.ps1          # Automated PowerShell installer
-├── README.md            # Documentation
-└── src/                 # Main plugin source directory (Injected into Steam)
-    ├── plugin.json      # Millennium plugin configuration
-    ├── main.py          # Python Backend (Resource management)
-    └── webapp/          # JS Frontend (UI Injection)
-        └── index.js
 🖥️ Requirements
 OS: Windows 10 / 11
 
