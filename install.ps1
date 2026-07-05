@@ -1,4 +1,4 @@
-# install.ps1 - SteamFast & Millennium Installer (Smart Path Detection)
+# install.ps1 - SteamFast & Millennium Installer (Strict Check)
 $ErrorActionPreference = "Stop"
 
 Write-Host "==================================================" -ForegroundColor Cyan
@@ -9,8 +9,6 @@ Write-Host "==================================================" -ForegroundColor
 # 1. Windows Script Execution Policy Check
 $currentPolicy = Get-ExecutionPolicy
 if ($currentPolicy -eq "Restricted") {
-    Write-Host ""
-    Write-Host "[!] Security Warning: Windows is blocking script execution." -ForegroundColor Yellow
     Write-Host "[-] Installation aborted due to policy restrictions." -ForegroundColor Red
     exit 1
 }
@@ -28,15 +26,15 @@ if (-not $steamPath) {
 
 Write-Host "[+] Found Steam path: $steamPath" -ForegroundColor Green
 
-# הגדרת נתיבים לבדיקה
+# נתיבים מדויקים לבדיקת הגרסה הקיימת אצלך במחשב
 $millenniumDll = "$steamPath\millennium.dll"
 $millenniumExe = "$steamPath\millennium.exe"
 $pluginsDir = "$steamPath\plugins"
 
 # 3. Check and Install Millennium
-# בדיקה חכמה: אם קיים ה-DLL או ה-EXE, מדלגים על ההורדה!
+# אם אחד מהם קיים - אנחנו לא נוגעים ב-Millennium שלך וממשיכים ישר לפלאגין!
 if ((Test-Path $millenniumDll) -or (Test-Path $millenniumExe)) {
-    Write-Host "[*] Millennium components detected. Skipping core download..." -ForegroundColor Yellow
+    Write-Host "[*] Millennium is already installed on your system. Skipping core setup..." -ForegroundColor Yellow
 } else {
     Write-Host "[+] Millennium not found. Fetching latest release from GitHub API..." -ForegroundColor Cyan
     
@@ -45,10 +43,10 @@ if ((Test-Path $millenniumDll) -or (Test-Path $millenniumExe)) {
     
     try {
         $releaseInfo = Invoke-RestMethod -Uri $repoUrl -UserAgent "Mozilla/5.0" -UseBasicParsing
-        $downloadUrl = ($releaseInfo.assets | Where-Object { $_.name -like "*windows-x86_64*.zip" -or $_.name -like "*.zip" })[0].browser_download_url
+        # סינון קשוח: לוקח רק קובץ ZIP רגיל שלא מכיל את המילה pdb
+        $downloadUrl = ($releaseInfo.assets | Where-Object { $_.name -like "*.zip" -and $_.name -notlike "*pdb*" })[0].browser_download_url
     } catch {
         Write-Host "[-] Failed to fetch Millennium updates from GitHub." -ForegroundColor Red
-        Write-Host "[*] Error Details: $_" -ForegroundColor DarkGray
         exit 1
     }
 
@@ -95,6 +93,6 @@ $sourceFolder = "$pluginExtracted\steamfast-main\src"
 Move-Item -Path $sourceFolder -Destination $pluginTarget -Force
 
 Write-Host "==================================================" -ForegroundColor Green
-Write-Host "[+] SUCCESS: SteamFast v8.4 & Millennium are set up!" -ForegroundColor Green
+Write-Host "[+] SUCCESS: SteamFast v8.4 is set up!" -ForegroundColor Green
 Write-Host "[*] Please restart Steam completely to apply changes." -ForegroundColor Yellow
 Write-Host "==================================================" -ForegroundColor Green
