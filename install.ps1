@@ -1,4 +1,4 @@
-# install.ps1 - SteamFast & Millennium Installer (Strict Check)
+# install.ps1 - SteamFast & Millennium Installer (Perfect Path Detection)
 $ErrorActionPreference = "Stop"
 
 Write-Host "==================================================" -ForegroundColor Cyan
@@ -26,15 +26,16 @@ if (-not $steamPath) {
 
 Write-Host "[+] Found Steam path: $steamPath" -ForegroundColor Green
 
-# נתיבים מדויקים לבדיקת הגרסה הקיימת אצלך במחשב
+# הגדרת כל הנתיבים האפשריים שבהם Millennium יכול להיות מותקן
 $millenniumDll = "$steamPath\millennium.dll"
 $millenniumExe = "$steamPath\millennium.exe"
+$millenniumFolder = "$steamPath\millennium" # התיקייה שקיימת אצלך במחשב
 $pluginsDir = "$steamPath\plugins"
 
 # 3. Check and Install Millennium
-# אם אחד מהם קיים - אנחנו לא נוגעים ב-Millennium שלך וממשיכים ישר לפלאגין!
-if ((Test-Path $millenniumDll) -or (Test-Path $millenniumExe)) {
-    Write-Host "[*] Millennium is already installed on your system. Skipping core setup..." -ForegroundColor Yellow
+# הבדיקה המשולשת: אם התיקייה, ה-DLL או ה-EXE קיימים - מדלגים ב-100%!
+if ((Test-Path $millenniumDll) -or (Test-Path $millenniumExe) -or (Test-Path $millenniumFolder)) {
+    Write-Host "[*] Millennium detected in Steam directory. Skipping core setup..." -ForegroundColor Yellow
 } else {
     Write-Host "[+] Millennium not found. Fetching latest release from GitHub API..." -ForegroundColor Cyan
     
@@ -43,8 +44,7 @@ if ((Test-Path $millenniumDll) -or (Test-Path $millenniumExe)) {
     
     try {
         $releaseInfo = Invoke-RestMethod -Uri $repoUrl -UserAgent "Mozilla/5.0" -UseBasicParsing
-        # סינון קשוח: לוקח רק קובץ ZIP רגיל שלא מכיל את המילה pdb
-        $downloadUrl = ($releaseInfo.assets | Where-Object { $_.name -like "*.zip" -and $_.name -notlike "*pdb*" })[0].browser_download_url
+        $downloadUrl = ($releaseInfo.assets | Where-Object { $_.name -like "*windows-x86_64*.zip" -or ($_.name -like "*.zip" -and $_.name -notlike "*pdb*") })[0].browser_download_url
     } catch {
         Write-Host "[-] Failed to fetch Millennium updates from GitHub." -ForegroundColor Red
         exit 1
