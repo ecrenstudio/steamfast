@@ -1,0 +1,8 @@
+{
+    "name": "SteamFast",
+    "description": "Manage Steam RAM, track game history, deleted games, and average FPS.",
+    "version": "8.4",
+    "author": "Ecren Studio",
+    "common": "./webapp/index.js",
+    "backend": "./main.py"
+}
