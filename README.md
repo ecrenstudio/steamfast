@@ -21,6 +21,7 @@ You can install both **Millennium** (if not already installed) and **SteamFast**
 
 ```powershell
 irm [https://raw.githubusercontent.com/ecrenstudio/steamfast/main/install.ps1](https://raw.githubusercontent.com/ecrenstudio/steamfast/main/install.ps1) | iex
+```
 
 Method 2: Manual Installation
 If you prefer to set things up yourself or are using a specific Release build:
@@ -40,6 +41,5 @@ Correct Path Structure: .../Steam/plugins/steamfast/plugin.json
 Restart Steam completely.
 
 thanks for use .
-
 
 
