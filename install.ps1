@@ -1,4 +1,4 @@
-# install.ps1 - SteamFast & Millennium Installer (Structured Version)
+# install.ps1 - SteamFast & Millennium Installer (Final Fixed Build)
 $ErrorActionPreference = "Stop"
 
 Write-Host "==================================================" -ForegroundColor Cyan
@@ -40,24 +40,28 @@ Write-Host "[+] Found Steam path: $steamPath" -ForegroundColor Green
 $millenniumDll = "$steamPath\millennium.dll"
 $pluginsDir = "$steamPath\plugins"
 
-# 3. Check and Install Millennium
+# 3. Check and Install Millennium (Using SteamClientHomebrew Official Repo)
 if (Test-Path $millenniumDll) {
     Write-Host "[*] Millennium is already installed. Skipping core download..." -ForegroundColor Yellow
 } else {
     Write-Host "[+] Millennium not found. Fetching latest release from GitHub API..." -ForegroundColor Cyan
     
-    $repoUrl = "https://api.github.com/repos/Millennium-Launcher/Millennium/releases/latest"
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    
+    # הקישור המעודכן והנכון!
+    $repoUrl = "https://api.github.com/repos/SteamClientHomebrew/Millennium/releases/latest"
     try {
-        $releaseInfo = Invoke-RestMethod -Uri $repoUrl -UseBasicParsing
-        $downloadUrl = ($releaseInfo.assets | Where-Object { $_.name -like "*.zip" })[0].browser_download_url
+        $releaseInfo = Invoke-RestMethod -Uri $repoUrl -UserAgent "Mozilla/5.0" -UseBasicParsing
+        $downloadUrl = ($releaseInfo.assets | Where-Object { $_.name -like "*windows-x86_64*.zip" -or $_.name -like "*.zip" })[0].browser_download_url
     } catch {
         Write-Host "[-] Failed to fetch Millennium updates from GitHub." -ForegroundColor Red
+        Write-Host "[*] Technical details: $_" -ForegroundColor DarkGray
         exit 1
     }
 
     Write-Host "[+] Downloading Millennium from: $downloadUrl" -ForegroundColor Cyan
     $tempZip = "$env:TEMP\millennium_latest.zip"
-    Invoke-WebRequest -Uri $downloadUrl -OutFile $tempZip -UseBasicParsing
+    Invoke-WebRequest -Uri $downloadUrl -OutFile $tempZip -UserAgent "Mozilla/5.0" -UseBasicParsing
 
     Write-Host "[+] Extracting Millennium core files..." -ForegroundColor Cyan
     $tempExtracted = "$env:TEMP\millennium_extracted"
@@ -88,13 +92,12 @@ $repoZipUrl = "https://github.com/ecrenstudio/steamfast/archive/refs/heads/main.
 $pluginZip = "$env:TEMP\steamfast_src.zip"
 
 Write-Host "[+] Fetching SteamFast source from GitHub..." -ForegroundColor Cyan
-Invoke-WebRequest -Uri $repoZipUrl -OutFile $pluginZip -UseBasicParsing
+Invoke-WebRequest -Uri $repoZipUrl -OutFile $pluginZip -UserAgent "Mozilla/5.0" -UseBasicParsing
 
 $pluginExtracted = "$env:TEMP\steamfast_extracted"
 if (Test-Path $pluginExtracted) { Remove-Item -Recurse -Force $pluginExtracted }
 Expand-Archive -Path $pluginZip -DestinationPath $pluginExtracted -Force
 
-# השינוי המרכזי: מעבירים רק את התוכן של תיקיית src מתוך ה-ZIP שחולץ לקבלת מבנה נקי בתוך סטים
 $sourceFolder = "$pluginExtracted\steamfast-main\src"
 Move-Item -Path $sourceFolder -Destination $pluginTarget -Force
 
