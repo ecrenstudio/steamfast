@@ -21,3 +21,25 @@ You can install both **Millennium** (if not already installed) and **SteamFast**
 
 ```powershell
 irm [https://raw.githubusercontent.com/ecrenstudio/steamfast/main/install.ps1](https://raw.githubusercontent.com/ecrenstudio/steamfast/main/install.ps1) | iex
+
+Method 2: Manual Installation
+If you prefer to set things up yourself or are using a specific Release build:
+
+Ensure you have Millennium installed in your Steam directory.
+
+Download the latest release or clone this repository.
+
+Locate your Steam installation folder (typically C:\Program Files (x86)\Steam).
+
+Navigate to the plugins/ directory (create it if it doesn't exist).
+
+Copy the content of the src/ folder from this repository into a new folder named steamfast inside plugins/.
+
+Correct Path Structure: .../Steam/plugins/steamfast/plugin.json
+
+Restart Steam completely.
+
+thanks for use .
+
+
+
